@@ -1,53 +1,55 @@
 """
-Задание 7. На закрепление навыков работы с деком
+Задание 7.	Напишите программу, доказывающую или проверяющую, что для множества
+натуральных чисел выполняется равенство: 1+2+...+n = n(n+1)/2,
+где n - любое натуральное число.
 
-В рассмотренном на уроке листинге есть один недостаток
-Приведенный код способен "обработать" только строку без пробелов,
-например, 'топот'
+Пример:
+для n = 5
+1+2+3+4+5 = 5(5+1)/2
 
-Но могут быть и такие палиндромы, как 'молоко делили ледоколом'
+Нужно написать функцибю-рекурсию только для левой части выражения!
+Результат нужно сверить с правой частью.
 
-Вам нужно доработать программу так, чтобы она могла выполнить
-проверку на палиндром и в таких строках (включающих пробелы)
-
-Примечание: ПРОШУ ВАС ВНИМАТЕЛЬНО ЧИТАТЬ ЗАДАНИЕ!
---код с нуля писать не нужно, требуется доработать пример с урока
+Решите через рекурсию. Решение через цикл не принимается.
 """
 
+import sys
 
-class MyDeque:
-    def __init__(self):
-        self.els = []
 
-    def to_front(self, el):
-        self.els.append(el)
+# стек переполяется при вводе 499 из-за проверки в декораторе
+# def recursion_check(func):
+#     def wrapper(n, i=1, sum_i=0):
+#         if sys.getrecursionlimit() == 1000 and n > 498:
+#             print('Введено число больше 498. Стек переполнен')
+#             return exit(0)
+#         return func(n, i, sum_i)
+#
+#     return wrapper
 
-    def to_rear(self, el):
-        self.els.insert(0, el)
 
-    def from_rear(self):
-        return self.els.pop()
+# @recursion_check
+# # без декоратора можно вводить число не больше 997
+# def check_nat_numbers(n, i=1, sum_i=0):
+#     if sys.getrecursionlimit() == 1000 and n > 997:
+#         print('Введено число больше 998. Стек переполнен')
+#         return exit(0)
+#     if i <= n:
+#         sum_i += i
+#         return check_nat_numbers(n, i + 1, sum_i)
+#     return f'{int(n * (n + 1) / 2)} = {sum_i}'
+#
+#
+# if __name__ == '__main__':
+#     print(check_nat_numbers(n=int(input('Введите любое натуральное число: '))))
 
-    def from_front(self):
-        return self.els.pop(0)
 
-    def size(self):
-        return len(self.els)
-
-    @staticmethod
-    def pal_checker(string):
-        string = string.replace(" ", "")
-        for el in string:
-            deque.to_rear(el)
-        pal = True  # паллиндром
-        while deque.size() > 1 and pal:
-            first = deque.from_front()
-            last = deque.from_rear()
-            if first != last:
-                pal = False
-        return pal
+def check_nat_numbers(n):
+    if sys.getrecursionlimit() == 1000 and n > 997:
+        print('Введено число больше 998. Стек переполнен')
+        return exit(0)
+    return n if n == 1 else check_nat_numbers(n - 1) + n
 
 
 if __name__ == '__main__':
-    deque = MyDeque()
-    print(deque.pal_checker("молоко делили ледоколом"))
+    n = int(input("Введите любое натуральное число: "))
+    print(f'{check_nat_numbers(n)} = {int(n * (n + 1) / 2)}')

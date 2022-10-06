@@ -1,55 +1,31 @@
 """
-Задание 6. На закрепление навыков работы с очередью
+Задание 6.	В программе генерируется случайное целое число от 0 до 100.
+Пользователь должен его отгадать не более чем за 10 попыток. После каждой
+неудачной попытки должно сообщаться больше или меньше введенное пользователем
+число, чем то, что загадано. Если за 10 попыток число не отгадано,
+то вывести загаданное число.
 
-Примечание: в этом задании вспомните ваши знания по работе с ООП
-и опирайтесь на пример урока
-
-Реализуйте структуру "доска задач".
-
-Структура должна предусматривать наличие несольких очередей задач, например
-1) базовой, откуда задачи берутся, решаются и отправляются в список решенных
-2) очередь на доработку, когда нерешенные задачи из первой очереди отправляются
-на корректировку решения
-
-После реализации структуры, проверьте ее работу на различных сценариях
-
-Примечание: ПРОШУ ВАС ВНИМАТЕЛЬНО ЧИТАТЬ ЗАДАНИЕ!
+Решите через рекурсию. Решение через цикл не принимается.
 """
 
 
-class MyQueue:
-    def __init__(self):
-        self.base = []
-        self.solved = []
-        self.revision = []
+from random import randint
 
-    def to_queue(self, task):
-        self.base.insert(-1, task)
 
-    def to_solved(self):
-        self.solved.insert(0, self.base.pop())
-
-    def to_revision(self):
-        self.revision.insert(0, self.base.pop())
-
-    def return_to_base(self):
-        self.base.insert(0, self.revision.pop())
-
-    def size(self):
-        return len(self.base)
+def play_rand_numbers(secret_num=randint(0, 100), user_attemts=10):
+    if user_attemts > 0:
+        user_inp = int(input('Введите загаданное число от 0 до 100: '))
+        if user_inp == secret_num:
+            print('Молодец, угадал')
+            return 0
+        elif user_inp > secret_num:
+            print('Введено число больше заданного')
+        else:
+            print('Введено число меньше заданного')
+        return play_rand_numbers(secret_num, user_attemts-1)
+    print('!!!LOOSER!!!')
+    return 0
 
 
 if __name__ == '__main__':
-    tasks = MyQueue()
-    tasks.to_queue('Задача_1')
-    tasks.to_queue('Задача_2')
-    tasks.to_queue('Задача_3')
-    print(tasks.base)
-    print(tasks.size())
-    tasks.to_solved()
-    print(tasks.solved)
-    tasks.to_revision()
-    print(tasks.revision)
-    tasks.return_to_base()
-    print(tasks.revision)
-    print(tasks.base)
+    play_rand_numbers()
