@@ -1,97 +1,84 @@
 """
 Задание 1.
 
-Реализуйте:
+Приведен код, который позволяет сохранить в
+массиве индексы четных элементов другого массива
 
-a) заполнение списка, оцените сложность в O-нотации.
-   заполнение словаря, оцените сложность в O-нотации.
-   сделайте аналитику, что заполняется быстрее и почему.
-   сделайте замеры времени.
+Сделайте замеры времени выполнения кода с помощью модуля timeit
 
-b) выполните со списком и словарем операции: изменения и удаления элемента.
-   оцените сложности в O-нотации для операций
-   получения и удаления по списку и словарю
-   сделайте аналитику, какие операции быстрее и почему
-   сделайте замеры времени.
+Попробуйте оптимизировать код, чтобы снизить время выполнения
+Проведите повторные замеры
 
-
-ВНИМАНИЕ: в задании два пункта - а) и b)
-НУЖНО выполнить оба пункта
-
-Подсказка: для замеров воспользуйтесь модулем time (см. примеры урока 1)
-вы уже знаете, что такое декоратор и как его реализовать,
-обязательно реализуйте ф-цию-декоратор и пусть она считает время
-И примените ее к своим функциям!
+ОБЯЗАТЕЛЬНО! Добавьте аналитику: что вы сделали и какой это принесло эффект
 """
 
-
-def time_measure(func):
-    def wrapper():
-        start = time()
-        func()
-        stop = time()
-        time_delta = stop - start
-        return time_delta, func()
-
-    return wrapper
+import timeit
 
 
-@time_measure
-def fill_in_lst():  # общая сложность O(1)
-    lst = []  # O(1)
-    for el in range(1000000):  # O(1)
-        lst.append(el)  # O(1)
-    return lst  # O(1)
+def func_1(nums):
+    new_arr = []
+    for i in range(len(nums)):
+        if nums[i] % 2 == 0:
+            new_arr.append(i)
+    return new_arr
 
 
-@time_measure
-def fill_in_dct():  # общая сложность O(1)
-    dct = {}  # O(1)
-    for key in range(1000000):  # O(1)
-        dct.setdefault(key)  # O(1)
-    return dct  # O(1)
+def func_2(nums):
+    new_arr = list(filter(lambda i: nums[i] % 2 == 0, range(len(nums))))
+    return new_arr
 
 
-@time_measure
-def change_in_lst():  # общая сложность O(1)
-    lst = fill_in_lst()[1]  # O(1)
-    for i in range(100):  # O(1)
-        lst[i] = None  # O(1)
-    return lst  # O(1)
+def func_3(nums):
+    new_arr = []
+    for i, num in enumerate(nums):
+        if num % 2 == 0:
+            new_arr.append(i)
+    return new_arr
 
 
-@time_measure
-def change_in_dct():  # O(1)
-    dct = fill_in_dct()[1]  # O(1)
-    for i in range(100):  # O(1)
-        dct[i] = 'Not None'  # O(1)
-    return dct  # O(1)
+def func_4(nums):
+    new_arr = []
+    [new_arr.append(i) for i in range(len(nums)) if nums[i] % 2 == 0]
+    return new_arr
 
 
-@time_measure
-def del_in_lst():  # O(n)
-    lst = fill_in_lst()[1]  # O(1)
-    for i in range(100):  # O(1)
-        del lst[i]  # O(n)
-    return lst  # O(1)
-
-
-@time_measure
-def del_in_dct():  # O(n)
-    dct = fill_in_dct()[1]  # O(1)
-    for i in range(100):  # O(1)
-        del dct[i]  # O(1)
-    return dct  # O(1)
+def func_5(nums):
+    new_arr = []
+    [new_arr.append(i) for i, el in enumerate(nums) if el % 2 == 0]
+    return new_arr
 
 
 if __name__ == '__main__':
-    from time import time
+    print(timeit.timeit(
+        stmt='func_1(range(1, 1000))',
+        setup='from __main__ import func_1',
+        number=10000))
+    print(timeit.timeit(
+        stmt='func_2(range(1, 1000))',
+        setup='from __main__ import func_2',
+        number=10000))
+    print(timeit.timeit(
+        stmt='func_3(range(1, 1000))',
+        setup='from __main__ import func_3',
+        number=10000))
+    print(timeit.timeit(
+        stmt='func_4(range(1, 1000))',
+        setup='from __main__ import func_4',
+        number=10000))
+    print(timeit.timeit(
+        stmt='func_5(range(1, 1000))',
+        setup='from __main__ import func_5',
+        number=10000))
 
-    # поскольку словарь создает (изменяет) хеш-таблицу,
-    # время на наполнение, изменение записей в словаре затрачивается немного больше,
-    # чем в списке, а операции удаления осуществляются быстрее в словаре
-    # (в списке после удаления происходит еще смещение элементов).
-    print(f'Разница во времени операций словаря и списка:\n'
-          f'наполнения млн записей - {fill_in_dct()[0] - fill_in_lst()[0]}\n'
-          f'изменения ста записей - {change_in_dct()[0] - change_in_lst()[0]}\n'
-          f'удаления ста записей - {del_in_dct()[0] - del_in_lst()[0]}')
+# import модуля перенес вверх кода (в предыдущем варианте ДЗ был после инструкции if __name__ == '__main__)
+
+# В прошлом варианте ДЗ ориентировался на описание модуля timeit https://docs.python.org/3/library/timeit.html,
+# там приведен пример (в конце, предпоследний), в котором import модуля - после иструкции if __name__ == '__main__':
+
+# Мои результаты:
+# 1.139483 базовый цикл с range, len
+# 1.4697597 filter c приведением к list
+# 0.6994737 enumerate в цикле
+# 1.1736919000000001 LC с range, len
+# 0.7208781000000002 LC c enumerate
+
